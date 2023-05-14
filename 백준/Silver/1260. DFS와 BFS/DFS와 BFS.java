@@ -1,79 +1,108 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
+    static StringBuilder sb;
+    static int[] result;
+    static boolean[] visit;
+    static int n;
+    static int m;
+    static int start;
 
-	static StringBuilder sb = new StringBuilder();
-	static boolean[] check;
-	static int[][] arr;
-	
-	static int node, line, start;
-	
-	static Queue<Integer> q = new LinkedList<>();
 
-	public static void main(String[] args) throws IOException {
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		node = Integer.parseInt(st.nextToken());
-		line = Integer.parseInt(st.nextToken());
-		start= Integer.parseInt(st.nextToken());
-		
-		arr = new int[node+1][node+1];
-		check = new boolean[node+1];
-		
-		for(int i = 0 ; i < line ; i ++) {
-			StringTokenizer str = new StringTokenizer(br.readLine());
-			
-			int a = Integer.parseInt(str.nextToken());
-			int b = Integer.parseInt(str.nextToken());
-			
-			arr[a][b] = arr[b][a] =  1;	
-		}
-			dfs(start);
-			sb.append("\n");
-			check = new boolean[node+1];
-			
-			bfs(start);
-			
-			System.out.println(sb);
-		
-		}
-	public static void dfs(int start) {
-		
-		check[start] = true;
-		sb.append(start + " ");
-		
-		for(int i = 0 ; i <= node ; i++) {
-			if(arr[start][i] == 1 && !check[i])
-				dfs(i);
-		}
-		
-	}
-	
-	public static void bfs(int start) {
-		q.add(start);
-		check[start] = true;
-		
-		while(!q.isEmpty()) {
-			
-			start = q.poll();
-			sb.append(start + " ");
-			
-			for(int i = 1 ; i <= node ; i++) {
-				if(arr[start][i] == 1 && !check[i]) {
-					q.add(i);
-					check[i] = true;
-				}
-			}
-		}
-		
-		
-	}
+    public static void main(String[] args) throws IOException {
+        sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken(" "));
+        m = Integer.parseInt(st.nextToken(" "));
+        start = Integer.parseInt(st.nextToken(" "));
 
+        result = new int[m];
+        visit = new boolean[n + 1];
+
+        HashMap<Integer, ArrayList<Integer>> graph = new HashMap<>();
+
+        for(int i = 1; i <= n; i++) {
+            graph.put(i,new ArrayList<Integer>());
+        }
+
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int key = Integer.parseInt(st.nextToken(" "));
+            int val = Integer.parseInt(st.nextToken(" "));
+
+            graph.get(key).add(val);
+            graph.get(val).add(key);
+
+//            if (graph.containsKey(key)) {
+//                graph.get(key).add(val);
+//
+//                if (graph.containsKey(val))
+//                    graph.get(val).add(key);
+//                else {
+//                    ArrayList keys = new ArrayList<>();
+//                    keys.add(key);
+//                    graph.put(val, keys);
+//                }
+//            } else {
+//                ArrayList<Integer> value = new ArrayList<>();
+//                value.add(val);
+//                graph.put(key, value);
+//
+//                if (graph.containsKey(val))
+//                    graph.get(val).add(key);
+//                else {
+//                    ArrayList keys = new ArrayList<>();
+//                    keys.add(key);
+//                    graph.put(val, keys);
+//                }
+//
+//            }
+        }
+
+        dfs(graph, 0, start);
+
+        sb.append("\n");
+        visit = new boolean[n + 1];
+
+        bfs(graph,start);
+
+        System.out.println(sb);
+    }
+
+    public static void dfs(HashMap<Integer, ArrayList<Integer>> graph, int depth, int start) {
+        visit[start] = true;
+        sb.append(start + " ");
+
+        Collections.sort(graph.get(start));
+        for (int i = 0; i < graph.get(start).size(); i++) {
+            if (!visit[graph.get(start).get(i)]) {
+                dfs(graph, depth + 1, graph.get(start).get(i));
+            }
+        }
+
+    }
+
+    public static void bfs(HashMap<Integer, ArrayList<Integer>> graph, int start) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(start);
+        visit[start] = true;
+
+        while (!queue.isEmpty()) {
+            start = queue.poll();
+            sb.append(start + " ");
+
+            for (int i = 0; i < graph.get(start).size(); i++) {
+                if(!visit[graph.get(start).get(i)]) {
+                    queue.add(graph.get(start).get(i));
+                    visit[graph.get(start).get(i)] = true;
+                }
+            }
+        }
+
+
+    }
 }
