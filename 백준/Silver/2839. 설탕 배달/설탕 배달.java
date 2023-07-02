@@ -6,54 +6,39 @@ public class Main {
 
         int N = scanner.nextInt();
 
+        int[] greedy = new int[N];
+
         int count = 0;
 
-        int[] list = new int[5000];
-
-        boolean fail = false;
-
         while (true) {
-
-            int sum = 0;
-            for (int i = 0; i < count; i++) {
-                sum += list[i];
-            }
-
-            if (sum == N)
+            if (N == 0) {
+                System.out.println(count);
                 break;
-
-            else if (sum < N) {
-                if(list[0] == 0) {
-                    list[count] = 5;
-                    count++;
-                }
-                else if(list[count-1] == 3) {
-                    list[count] = 3;
-                    count++;
-                }
-                else {
-                    list[count] = 5;
-                    count++;
-                }
+            } else if (N >= 5) {
+                greedy[count] = 5;
+                N -= 5;
+                count++;
+            } else if (N >= 3 && N < 5) {
+                greedy[count] = 3;
+                N -= 3;
+                count++;
             }
-            else if (sum > N) {
-                if(list[0] == 3) {
-                    fail = true;
-                    break;
-                }
-
-                for(int i = count-1; i >= 0; i--) {
-                    if(list[i] == 5) {
-                        list[i] = 3;
+            else {
+                boolean temp = false;
+                for(int i = count -1 ; i >= 0; i--) {
+                    if(greedy[i] == 5) {
+                        greedy[i] = 3;
+                        N += 2;
+                        temp = true;
                         break;
                     }
                 }
-
+                if(!temp) {
+                    System.out.println(-1);
+                    break;
+                }
             }
         }
-        if(fail)
-            System.out.println(-1);
-        else
-            System.out.println(count);
+
     }
 }
