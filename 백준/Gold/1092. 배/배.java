@@ -2,50 +2,59 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int N = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
+
         List<Integer> crane = new ArrayList<>();
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for(int i = 0; i<N; i++)
+        for (int i = 0; i < n; i++) {
             crane.add(Integer.parseInt(st.nextToken()));
+        }
 
-        int M = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
+
         List<Integer> box = new ArrayList<>();
 
         st = new StringTokenizer(br.readLine());
-        for(int i = 0; i<M; i++)
+        for (int i = 0; i < m; i++) {
             box.add(Integer.parseInt(st.nextToken()));
-
-        //내림차순으로 정렬
-        crane.sort(Collections.reverseOrder());
-        box.sort(Collections.reverseOrder());
-
-        if(crane.get(0)<box.get(0)){
-            System.out.println(-1);
-            return;
         }
 
-        int day = 0;
-        while(!box.isEmpty()){
-            int boxIdx = 0, craneIdx = 0;
+        Collections.sort(crane, Collections.reverseOrder());
 
-            while(craneIdx<N){
-                if(boxIdx == box.size())
-                    break;
-                else if(crane.get(craneIdx) >= box.get(boxIdx)){
-                    box.remove(boxIdx);
-                    craneIdx++;
+        Collections.sort(box, Collections.reverseOrder());
+
+
+        int result = 0;
+
+        if (crane.get(0) < box.get(0)) {
+            result = -1;
+        } else {
+            while (!box.isEmpty()) {
+
+                int idx = 0;
+                for (int i = 0; i < n;) {
+                    if(idx == box.size()) break;
+                    else if(crane.get(i) >= box.get(idx)) {
+                        box.remove(idx);
+                        i++;
+                    } else {
+                        idx++;
+                    }
+
                 }
-                else
-                    boxIdx++;
-            }
+                result++;
 
-            day++;
+            }
         }
 
-        System.out.println(day);
+        bw.write(String.valueOf(result));
+        bw.flush();
+        bw.close();
+
     }
 }
