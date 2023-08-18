@@ -20,22 +20,16 @@ public class Main {
 
         Collections.sort(list);
 
-        if (list.get(0) != 1) {
-            System.out.println(1);
-        } else {
-
-            int max = 1;
-            for (int i = 1; i < n; i++) {
-                if (list.get(i) <= max + 1)
-                    max += list.get(i);
-                else {
-                    break;
-                }
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            if (list.get(i) <= max + 1)
+                max += list.get(i);
+            else {
+                break;
             }
-
-            System.out.println(max + 1);
         }
 
+        System.out.println(max + 1);
 
     }
 }
