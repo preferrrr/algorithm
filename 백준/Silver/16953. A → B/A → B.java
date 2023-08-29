@@ -1,44 +1,38 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
-import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-//
-//        Scanner scanner = new Scanner(System.in);
-//        int start = scanner.nextInt();
-//        int end = scanner.nextInt();
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] temp = br.readLine().split(" ");
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        int a = Integer.parseInt(temp[0]);
+        int b = Integer.parseInt(temp[1]);
 
-        int start = Integer.parseInt(st.nextToken());
-        int end = Integer.parseInt(st.nextToken());
+        int result = 1;
 
-        check(start, end);
-    }
-
-    public static int count = 0;
-
-    public static void check(int start, int end) {
-        if (end == start) {
-            System.out.println(count + 1);
-        } else if (end < start) {
-            System.out.println(-1);
-        } else {
-            if (end % 10 == 1) {
-                count++;
-                end = end / 10;
-                check(start, end);
-            } else if (end % 2 == 0) {
-                count++;
-                check(start, end/2);
+        while (true) {
+            if(a == b)
+                break;
+            else if(a > b) {
+                result = -1;
+                break;
+            }
+            
+            if (b % 10 == 1) {
+                b -= 1;
+                b /= 10;
+                result++;
+            } else if (b % 2 == 0) {
+                b /= 2;
+                result++;
             } else {
-                System.out.println(-1);
+                result = -1;
+                break;
             }
         }
+
+        System.out.println(result);
     }
 }
