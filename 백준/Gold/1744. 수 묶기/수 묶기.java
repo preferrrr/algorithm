@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -9,46 +8,43 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
 
-        PriorityQueue<Integer> did = new PriorityQueue<>(Collections.reverseOrder());
-        PriorityQueue<Integer> dma = new PriorityQueue<>();
+        PriorityQueue<Integer> plus = new PriorityQueue<>(Comparator.reverseOrder());
+        PriorityQueue<Integer> minus = new PriorityQueue<>();
 
         for (int i = 0; i < n; i++) {
-            int temp = Integer.parseInt(br.readLine());
-            if (temp > 0)
-                did.add(temp);
+            int num = Integer.parseInt(br.readLine());
+            if (num > 0)
+                plus.add(num);
             else
-                dma.add(temp);
+                minus.add(num);
         }
 
         int result = 0;
 
-        while (!did.isEmpty()) {
-            int a = did.poll();
-            if (!did.isEmpty()) {
-                int b = did.poll();
-                if(a * b > a + b) {
-                    result += a * b;
-                } else {
-                    result += a + b;
-                }
-            } else {
-                result += a;
-            }
+        while (!plus.isEmpty()) {
+            int a = plus.poll();
+            int b;
+            if (!plus.isEmpty())
+                b = plus.poll();
+            else b = 0;
+            if(a * b > a + b)
+                result += a * b;
+            else result += a + b;
         }
 
-        while(!dma.isEmpty()) {
-            int a = dma.poll();
-            if(!dma.isEmpty()) {
-                int b = dma.poll();
-                result += a * b;
-            } else {
+        while(!minus.isEmpty()) {
+            int a = minus.poll();
+            int b;
+            if(!minus.isEmpty())
+                b = minus.poll();
+            else {
                 result += a;
+                break;
             }
+
+            result += a * b;
         }
 
         System.out.println(result);
-        //양수일 때 곱하는데 둘 중 하나가 1이면 ?
-
-
     }
 }
