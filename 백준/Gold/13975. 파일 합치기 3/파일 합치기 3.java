@@ -1,37 +1,33 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    static StringBuilder sb = new StringBuilder();
+
     public static void main(String[] args) throws IOException {
-        //40 30 30 50
-        //40 60 50 / 60
-        //60 90 / 150
-        // 150 / 300
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        int t = Integer.parseInt(br.readLine());
+        int c = Integer.parseInt(br.readLine());
 
-        for (int i = 0; i < t; i++) {
+        for (int t = 0; t < c; t++) {
             int n = Integer.parseInt(br.readLine());
-            StringTokenizer st = new StringTokenizer(br.readLine());
+
             PriorityQueue<Long> queue = new PriorityQueue<>();
-            for (int j = 0; j < n; j++) {
+
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < n; i++) {
                 queue.add(Long.parseLong(st.nextToken()));
             }
+
             long result = 0;
-            while (queue.size() > 1) {
-                long temp = queue.poll() + queue.poll();
-                result += temp;
-                queue.add(temp);
+            while(queue.size() > 1) {
+                Long sum = queue.poll() + queue.poll();
+                result += sum;
+                queue.add(sum);
             }
 
-            sb.append(result + "\n");
+            sb.append(result+"\n");
         }
 
-        System.out.print(sb);
+        System.out.println(sb);
     }
 }
