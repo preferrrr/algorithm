@@ -6,51 +6,45 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         int n = Integer.parseInt(br.readLine());
 
-        List<Time> arr = new ArrayList<>();
-
+        List<Node> list = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            Time time = new Time(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-            arr.add(time);
+            Node node = new Node();
+            node.start = Integer.parseInt(st.nextToken());
+            node.end = Integer.parseInt(st.nextToken());
+            list.add(node);
         }
 
-        Collections.sort(arr);
+        Collections.sort(list);
 
+        PriorityQueue<Integer> result = new PriorityQueue<>();
+        result.add(list.get(0).end);
 
-        PriorityQueue<Integer> queue = new PriorityQueue<>();
-
-        queue.add(arr.get(0).y);
-
-        for (int i = 1; i < arr.size(); i++) {
-            if(queue.peek() <= arr.get(i).x) {
-                queue.poll();
+        for(int i = 1 ; i < n; i++) {
+            Node temp = list.get(i);
+            if(result.peek() <= temp.start) {
+                result.poll();
+                result.add(temp.end);
+            } else {
+                result.add(temp.end);
             }
-            queue.add(arr.get(i).y);
         }
 
-        System.out.println(queue.size());
-
+        System.out.println(result.size());
 
     }
 
-    public static class Time implements Comparable<Time> {
-        int x;
-        int y;
-
-        public Time(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
+    public static class Node implements Comparable<Node> {
+        int start;
+        int end;
 
         @Override
-        public int compareTo(Time o) {
-            if (this.x == o.x)
-                return this.y - o.y;
-            return this.x - o.x;
+        public int compareTo(Node o) {
+            if (this.start == o.start)
+                return this.end - o.end;
+            return this.start - o.start;
         }
     }
 }
