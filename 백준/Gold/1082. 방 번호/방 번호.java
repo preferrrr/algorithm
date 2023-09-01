@@ -1,65 +1,117 @@
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-class number{
-    int num, price;
-    number(int num, int price) {this.num = num; this.price = price;}
-}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 
 public class Main {
-    private static int N, pocket;
-    private static int res[] = new int[100];
-    private static number arr[];
-    private static Map<Integer, Integer> m = new HashMap<>(); 
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
 
-    public static void main(String[ ] args) {
-        Scanner sc = new Scanner(System.in);
-        N = sc.nextInt(); arr = new number[N];
-        for(int i = 0; i < N; i++) {
-            arr[i] = new number(i, sc.nextInt());
-            m.put(i, arr[i].price);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        List<Node> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            Node node = new Node();
+            node.num = i;
+            node.price = Integer.parseInt(st.nextToken());
+            list.add(node);
         }
-        pocket = sc.nextInt();
 
-        Arrays.sort(arr, new Comparator<number>() { 
+        Collections.sort(list);
+
+        int m = Integer.parseInt(br.readLine());
+
+        //자릿수가 커야함.
+        //가장 큰 자릿수 구하고
+
+        //0이 아닌 가장 싼거 먼저 골라.
+        //그 다음 가장 싼거로 다 채워 => 최대 자릿수
+        //하나씩 바꿔
+
+        List<Node> result = new ArrayList<>();
+
+        if (list.get(0).num == 0 && list.size() > 1 && m >= list.get(1).price) {
+
+            m -= list.get(1).price;
+
+            Node node = new Node();
+            node.num = list.get(1).num;
+            node.price = list.get(1).price;
+
+            result.add(node);
+        }//가장 싼게 0이면 그 다음으로 싼거 하나 넣음.
+
+
+
+        while (m - list.get(0).price >= 0) {
+            Node cheaper = new Node();
+            cheaper.price = list.get(0).price;
+            cheaper.num = list.get(0).num;
+            m -= cheaper.price;
+            result.add(cheaper);
+        }//최대 자릿수 만듬.
+
+        Collections.sort(list, new Comparator<Node>() {
             @Override
-            public int compare(number o1, number o2) {
-                if(o1.price == o2.price) return o1.num - o2.num;
-                return o1.price - o2.price;
+            public int compare(Node o1, Node o2) {
+                return o2.num - o1.num;
             }
+        }); // 리스트를 숫자가 큰 순으로 다시 정렬.
 
-        });
 
-        int cnt = 0;
-        if(arr[0].num == 0) { 
-            if(N == 1 || arr[1].price > pocket) { 
-                System.out.println(0); 
-                System.exit(0);
-            }
-            res[cnt++] = arr[1].num; 
-            pocket -= arr[1].price;
+        boolean zeroCheck = false;
+        for (int i = 0 ; i < result.size(); i++) {
+            if(result.get(i).num != 0)
+                zeroCheck = true;
         }
 
-        while(pocket - arr[0].price >= 0) {
-            res[cnt++] = arr[0].num;
-            pocket -= arr[0].price;
+        if(!zeroCheck) {
+            System.out.println(0);
+            System.exit(0);
         }
 
-        for(int i = 0; i < cnt; i++) {
-            for(int j = N - 1; j >= 0; j--) { 
-                if(i == 0 && j == 0) continue; 
-                int tmp = pocket + m.get(res[i]) - m.get(j);
-                if(tmp >= 0) {
-                    pocket = tmp; 
-                    res[i] = j;
+
+        for (int i = 0; i < result.size(); i++) {
+
+            for (int j = 0; j < list.size(); j++) {
+
+                if (result.get(i).num < list.get(j).num && m >= list.get(j).price - result.get(i).price) {
+
+                    m -= list.get(j).price - result.get(i).price;
+
+                    //result의 num을 list의 num으로 바꿔줘야함.
+                    result.get(i).num = list.get(j).num;
+                    result.get(i).price = list.get(j).price;
+
                     break;
                 }
             }
         }
 
-        for(int i = 0; i < cnt; i++) System.out.print(res[i]);
+        Collections.sort(list, new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o2.num - o1.num;
+            }
+        });
+
+        for (int i = 0; i < result.size(); i++) {
+            System.out.print(result.get(i).num);
+        }
+
+
+    }
+
+    static class Node implements Comparable<Node> {
+        int num;
+        int price;
+
+        @Override
+        public int compareTo(Node o) {
+            if (this.price == o.price)
+                return o.num - this.num;
+            return this.price - o.price;
+        }
     }
 }
