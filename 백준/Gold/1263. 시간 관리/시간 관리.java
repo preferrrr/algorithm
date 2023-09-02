@@ -1,59 +1,61 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        //3시간 걸리고 5시 내에 처리해야함.
-        //마감시간 내에 모두 처리해야하고, 최대한 늦게 시작해야함.
-
         int n = Integer.parseInt(br.readLine());
 
-        PriorityQueue<Work> queue = new PriorityQueue<>();
+        List<Node> list = new ArrayList<>();
+
         for (int i = 0; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            Work work = new Work(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-            queue.add(work);
+            int workTime = Integer.parseInt(st.nextToken());
+            int endTime = Integer.parseInt(st.nextToken());
+
+            Node node = new Node();
+            node.workTime = workTime;
+            node.endTime = endTime;
+
+            list.add(node);
         }
 
-        Work start = queue.poll();
-        int result = start.y - start.x;
+        Collections.sort(list);
 
-        while (!queue.isEmpty()) {
-            Work work = queue.poll();
-            if(work.x > work.y || work.x > result) {
-                result = -1;
-                break;
-            }
-            else if(work.y < result){
-                result = work.y - work.x;
+        int time = list.get(0).endTime - list.get(0).workTime;
+
+        for(int i = 1; i < n; i++) {
+            if(time <= list.get(i).endTime) {
+                time -= list.get(i).workTime;
             } else {
-                result -= work.x;
+                time = list.get(i).endTime - list.get(i).workTime;
             }
         }
 
-        System.out.println(result);
+        if(time < 0)
+            System.out.println(-1);
+        else
+            System.out.println(time);
+
+
 
     }
 
-    public static class Work implements Comparable<Work> {
-        int x;
-        int y;
+    static class Node implements Comparable<Node> {
+        int workTime;
+        int endTime;
 
-        public Work(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
 
         @Override
-        public int compareTo(Work o) {
-            if (o.y == this.y)
-                return o.x - this.x;
-            return o.y - this.y;
+        public int compareTo(Node o) {
+            if(this.endTime == o.endTime)
+                return o.workTime  - this.workTime;
+            return o.endTime - this.endTime;
         }
     }
-
 }
