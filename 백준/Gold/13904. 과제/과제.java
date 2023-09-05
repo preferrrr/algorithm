@@ -6,62 +6,65 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         int n = Integer.parseInt(br.readLine());
 
-
         List<Node> list = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
+
+        for (int i = 0 ; i < n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            Node node = new Node();
-            node.day = Integer.parseInt(st.nextToken());
-            node.score = Integer.parseInt(st.nextToken());
-            list.add(node);
+            int day = Integer.parseInt(st.nextToken());
+            int score = Integer.parseInt(st.nextToken());
+
+            list.add(new Node(day, score));
         }
 
         Collections.sort(list);
 
-        int sub = 0;
-
         PriorityQueue<Node> queue = new PriorityQueue<>(new Comparator<Node>() {
             @Override
             public int compare(Node o1, Node o2) {
-                if (o1.score == o2.score)
+                if(o1.score == o2.score)
                     return o1.day - o2.day;
                 return o1.score - o2.score;
             }
         });
 
-        for (int i = 0; i < n; i++) {
+        int cur = 0;
+
+        for(int i = 0 ; i < n; i++) {
             Node node = list.get(i);
-
-            if (node.day - sub > 0) {
+            if(node.day - cur > 0) {
                 queue.add(node);
-                sub++;
-            } else {
-                if (queue.peek().score < node.score) {
-                    queue.poll();
-                    queue.add(node);
-                }
+                cur++;
+            } else if(queue.peek().score < node.score) {
+                queue.poll();
+                queue.add(node);
             }
-
         }
 
-        int total = 0;
+        int result = 0;
         while(!queue.isEmpty()) {
-            Node node = queue.poll();
-            total += node.score;
+            result += queue.poll().score;
         }
 
-        System.out.println(total);
+        System.out.println(result);
+
+
     }
 
-    static class Node implements Comparable<Node> {
+    static class Node implements Comparable<Node>{
         int day;
         int score;
 
+        public Node (int day, int score) {
+            this.day = day;
+            this.score = score;
+        }
+
         @Override
         public int compareTo(Node o) {
-            if (this.day == o.day)
+            if(this.day == o.day)
                 return o.score - this.score;
             return this.day - o.day;
         }
