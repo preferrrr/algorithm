@@ -33,10 +33,10 @@ public class Main {
 
         int result = 0;
 
-        for(int i = 1; i <= n; i++) {
-            if(!visited[i]) {
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
                 result++;
-                dfs(map, i);
+                bfs(map, i);
             }
         }
 
@@ -49,9 +49,27 @@ public class Main {
 
         List<Integer> list = map.get(start);
 
-        for(int i = 0 ; i < list.size(); i++) {
-            if(!visited[list.get(i)])
+        for (int i = 0; i < list.size(); i++) {
+            if (!visited[list.get(i)])
                 dfs(map, list.get(i));
+        }
+    }
+
+    static void bfs(Map<Integer, ArrayList<Integer>> map, int start) {
+        Deque<Integer> deque = new ArrayDeque<>();
+
+        deque.add(start);
+
+        while (!deque.isEmpty()) {
+            int poll = deque.pollFirst();
+            List<Integer> list = map.get(poll);
+
+            for(int i = 0 ; i < list.size(); i++) {
+                if(!visited[list.get(i)]) {
+                    deque.addLast(list.get(i));
+                    visited[list.get(i)] = true;
+                }
+            }
         }
     }
 }
