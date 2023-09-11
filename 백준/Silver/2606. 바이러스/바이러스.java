@@ -1,61 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        int N = scanner.nextInt();
-        int T = scanner.nextInt();
+    static int result = 0;
+    static boolean[] visited;
 
-        HashMap<Integer, ArrayList<Integer>> hashMap = new HashMap<Integer, ArrayList<Integer>>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        hashMap.put(1, new ArrayList<Integer>());
-        List<Integer> list = new ArrayList<>();
+        int n = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
 
-        for(int i = 0; i < T; i++) {
-            int a = scanner.nextInt();
-            int b = scanner.nextInt();
+        visited = new boolean[n + 1];
 
-            if(!hashMap.containsKey(a)) {
-                ArrayList<Integer> values = new ArrayList<>();
-                values.add(b);
-                hashMap.put(a,values);
-            }
-            else {
-                hashMap.get(a).add(b);
-            }
+        Map<Integer, ArrayList<Integer>> graph = new HashMap<>();
 
-            if(!hashMap.containsKey(b)) {
-                ArrayList<Integer> values = new ArrayList<>();
-                values.add(a);
-                hashMap.put(b,values);
-            }
-            else {
-                hashMap.get(b).add(a);
-            }
+        for(int i = 1; i <= n; i++) {
+            graph.put(i, new ArrayList<>());
         }
 
-        count(list,hashMap,1);
+        for (int i = 0; i < m; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-        System.out.println(list.size()-1);
-    }
-
-    public static void count(List<Integer> list, HashMap<Integer, ArrayList<Integer>> hashMap,int N) {
-        if(list.contains(N))
-            return;
-        else {
-            list.add(N);
-            for(int i = 0 ; i < hashMap.get(N).size(); i++) {
-                if(!list.contains(hashMap.get(N).get(i)) || hashMap.get(N).get(i) != 1) {
-                    count(list, hashMap, hashMap.get(N).get(i));
-                }
-
-            }
+            graph.get(a).add(b);
+            graph.get(b).add(a);
         }
 
+        dfs(graph, 1);
+
+        System.out.println(result);
     }
 
+    static void dfs(Map<Integer, ArrayList<Integer>> graph, int start) {
+        visited[start] = true;
+
+        ArrayList<Integer> list = graph.get(start);
+
+        for(int i = 0; i < list.size(); i++) {
+            if(!visited[list.get(i)]) {
+                result++;
+                dfs(graph, list.get(i));
+            }
+        }
+    }
 }
