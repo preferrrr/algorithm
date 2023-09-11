@@ -1,57 +1,57 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
+
+    static boolean[] visited;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int N = Integer.parseInt(st.nextToken(" "));
-        int M = Integer.parseInt(st.nextToken(" "));
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        visited = new boolean[n + 1];
 
-        HashMap<Integer, ArrayList<Integer>> hashMap = new HashMap<Integer, ArrayList<Integer>>();
+        Map<Integer, ArrayList<Integer>> map = new HashMap<>();
 
-        for (int i = 1; i <= N; i++) {
-            ArrayList<Integer> list = new ArrayList<>();
-            hashMap.put(i, list);
+        for (int i = 1; i <= n; i++) {
+            map.put(i, new ArrayList<>());
         }
 
-
-        for (int i = 0; i < M; i++) {
+        for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            int key = Integer.parseInt(st.nextToken(" "));
-            int val = Integer.parseInt(st.nextToken(" "));
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-            hashMap.get(key).add(val);
-            hashMap.get(val).add(key);
+            map.get(a).add(b);
+            map.get(b).add(a);
         }
 
-        visit = new boolean[N + 1];
+        int result = 0;
 
-        for (int i = 1; i <= N; i++) {
-            if(!visit[i]) {
-                count++;
-                dfs(hashMap, i);
+        for(int i = 1; i <= n; i++) {
+            if(!visited[i]) {
+                result++;
+                dfs(map, i);
             }
         }
 
-        System.out.println(count);
+        System.out.println(result);
+
     }
 
-    static boolean[] visit;
-    static int count = 0;
+    static void dfs(Map<Integer, ArrayList<Integer>> map, int start) {
+        visited[start] = true;
 
-    public static void dfs(HashMap<Integer, ArrayList<Integer>> hashMap, int start) {
-        for (int i = 0; i < hashMap.get(start).size(); i++) {
-            if (!visit[hashMap.get(start).get(i)]) {
-                visit[hashMap.get(start).get(i)] = true;
-                dfs(hashMap, hashMap.get(start).get(i));
-            }
+        List<Integer> list = map.get(start);
+
+        for(int i = 0 ; i < list.size(); i++) {
+            if(!visited[list.get(i)])
+                dfs(map, list.get(i));
         }
     }
-
 }
