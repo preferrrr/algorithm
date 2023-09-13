@@ -34,7 +34,7 @@ public class Main {
 
         Arrays.fill(visited, -1);
 
-        bfs(x);
+        bfs(x, k);
 
         StringBuilder sb = new StringBuilder();
 
@@ -52,7 +52,7 @@ public class Main {
 
     }
 
-    static void bfs(int start) {
+    static void bfs(int start, int k) {
 
         visited[start] = 0;
 
@@ -62,12 +62,15 @@ public class Main {
         while(!deque.isEmpty()) {
             int poll = deque.pollFirst();
 
+            if(visited[poll] > k)
+                break;
+
             List<Integer> list = graph.get(poll);
 
             for(int i = 0 ; i < list.size(); i++) {
                 if(visited[list.get(i)] == -1) {
                     visited[list.get(i)] = visited[poll] + 1;
-                    deque.add(list.get(i));
+                    deque.addLast(list.get(i));
                 }
             }
         }
