@@ -31,9 +31,13 @@ public class Main {
             for (int j = 0; j < m; j++) {
                 if (arr[i][j] == 1) {
                     count++;
-                    int temp = bfs(i, j);
-                    if(temp > max)
-                        max = temp;
+//                    int temp = bfs(i, j);
+//                    if(temp > max)
+//                        max = temp;
+                    dfs(i, j);
+                    if (size > max)
+                        max = size;
+                    size = 0;
                 }
             }
         }
@@ -47,6 +51,22 @@ public class Main {
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
 
+    static int size = 0;
+
+    static void dfs(int i, int j) {
+        arr[i][j] = -1;
+        size++;
+        for (int k = 0; k < 4; k++) {
+            int tempX = i + dx[k];
+            int tempY = j + dy[k];
+
+            if (tempX >= 0 && tempY >= 0 && tempX < n && tempY < m && arr[tempX][tempY] == 1) {
+                dfs(tempX, tempY);
+            }
+
+        }
+    }
+
     static class Node {
         int x, y;
 
@@ -59,10 +79,10 @@ public class Main {
     static int bfs(int x, int y) {
         Deque<Node> deque = new ArrayDeque<>();
         arr[x][y] = -1;
-        deque.add(new Node(x,y));
+        deque.add(new Node(x, y));
 
         int count = 0;
-        while(!deque.isEmpty()) {
+        while (!deque.isEmpty()) {
             Node poll = deque.pollFirst();
             count++;
 
@@ -78,7 +98,6 @@ public class Main {
         }
 
         return count;
-
 
 
     }
