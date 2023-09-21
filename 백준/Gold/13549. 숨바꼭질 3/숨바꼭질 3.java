@@ -37,9 +37,9 @@ public class Main {
 
         @Override
         public int compareTo(Node o) {
-            if (this.w == o.w) {
-                return (Math.abs(end - this.v)) - (Math.abs(end - o.v));
-            }
+//            if (this.w == o.w) {
+//                return (Math.abs(end - this.v)) - (Math.abs(end - o.v));
+//            }
             return this.w - o.w;
         }
     }
