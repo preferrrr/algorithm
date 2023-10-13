@@ -24,9 +24,7 @@ public class Main {
 
         bfs();
 
-        if(result != Integer.MAX_VALUE)
-            System.out.println(result);
-        else System.out.println(-1);
+        System.out.println(result);
 
 
     }
@@ -51,7 +49,7 @@ public class Main {
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
 
-    static int result = Integer.MAX_VALUE;
+    static int result = -1;
 
     static void bfs() {
         Deque<Node> queue = new ArrayDeque<>();
@@ -67,8 +65,8 @@ public class Main {
             Node cur = queue.pollFirst();
 
             if (cur.x == n - 1 && cur.y == m - 1) {
-                if (result > cur.w)
-                    result = cur.w;
+                result = cur.w;
+                break;
             }
 
             for (int i = 0; i < 4; i++) {
