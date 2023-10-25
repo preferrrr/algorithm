@@ -1,15 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
     static int r, c;
     static char[][] arr;
-    static boolean[] check;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,7 +13,6 @@ public class Main {
         r = Integer.parseInt(st.nextToken());
         c = Integer.parseInt(st.nextToken());
         arr = new char[r][c];
-        check = new boolean[r];
 
         for (int i = 0; i < r; i++) {
             String temp = br.readLine();
@@ -27,7 +22,7 @@ public class Main {
         }
 
         for (int i = 0; i < r; i++) {
-            dfs(i, i, 0);
+            dfs(i, 0);
         }
 
         System.out.println(count);
@@ -49,9 +44,8 @@ public class Main {
 
     static int count = 0;
 
-    static boolean dfs(int start, int i, int j) {
+    static boolean dfs(int i, int j) {
         if (j == c - 1) {
-            check[start] = true;
             count++;
             return true;
         }
@@ -60,11 +54,11 @@ public class Main {
             int x = i + dx[d];
             int y = j + dy[d];
 
-            if (x >= 0 && y >= 0 && x < r && y < c && arr[x][y] == '.' && !check[start]) {
+            if (x >= 0 && y >= 0 && x < r && y < c && arr[x][y] == '.') {
 
                 arr[x][y] = '-';
 
-                result = dfs(start, x, y);
+                result = dfs(x, y);
 
                 if(result)
                     break;
