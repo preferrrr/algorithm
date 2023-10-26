@@ -1,52 +1,32 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
+        int x = Integer.parseInt(br.readLine());
 
-        Deque<Node> deque = new ArrayDeque<>();
-        boolean[] visited = new boolean[n + 1];
+        int[] dp = new int[x + 1];
+        Arrays.fill(dp, 1000001);
+        dp[1] = 0;
 
-        deque.add(new Node(n, 0));
-        visited[n] = true;
+        //어떤 숫자가 되는 방법은 2나 3을 곱해서 되거나 1 더하기
 
-        int result = -1;
+        for (int i = 2; i <= x; i++) {
 
-        while (!deque.isEmpty()) {
-            Node cur = deque.pollFirst();
-            if(cur.x == 1)
-                result = cur.w;
+            if(i % 3 == 0 && i / 3 > 0 && dp[i] > dp[i / 3] + 1)
+                dp[i] = dp[i / 3] + 1;
 
-            if (!visited[cur.x / 3] && cur.x % 3 == 0 && cur.x / 3 > 0) {
-                visited[cur.x / 3] = true;
-                deque.add(new Node(cur.x / 3, cur.w + 1));
-            }
+            if(i % 2 == 0 && i / 2 > 0 && dp[i] > dp[i/2] + 1)
+                dp[i] = dp[i / 2] + 1;
+            if(i - 1 > 0 && dp[i] > dp[i-1] + 1)
+                dp[i] = dp[i - 1] + 1;
 
-            if (!visited[cur.x / 2] && cur.x % 2 == 0 && cur.x / 2 > 0) {
-                visited[cur.x / 2] = true;
-                deque.add(new Node(cur.x / 2, cur.w + 1));
-            }
-
-            if (!visited[cur.x - 1] && cur.x - 1 > 0) {
-                visited[cur.x - 1] = true;
-                deque.add(new Node(cur.x - 1, cur.w + 1));
-            }
         }
 
-        System.out.println(result);
-    }
+        System.out.println(dp[x]);
 
-    static class Node {
-        int x, w;
-
-        public Node(int x, int w) {
-            this.x = x;
-            this.w = w;
-        }
     }
 }
