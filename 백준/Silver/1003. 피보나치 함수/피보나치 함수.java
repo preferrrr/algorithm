@@ -1,44 +1,33 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int T = scanner.nextInt();
 
-        //0 = 1 0
-        //1 = 0 1
-        //2 = 1 1
-        //3 = 1 2
-        //4 = 2 3
-        //5 = 3 5
-        int[][] list = new int[41][2];
-        list[0][0] = 1;
-        list[0][1] = 0;
-        list[1][0] = 0;
-        list[1][1] = 1;
+    static int[] dp0 = new int[41];
+    static int[] dp1 = new int[41];
 
-        for(int i = 0; i <T; i++) {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
-            int n = scanner.nextInt();
+        dp0[0] = 1;
+        dp1[0] = 0;
 
-            int k = 2;
-            if(n == 0) {
-                System.out.println(list[n][0] + " " + list[n][1]);
-            }
-            else if(n == 1) {
-                System.out.println(list[n][0] + " " + list[n][1]);
-            }
-            else {
-                while(k != n+1) {
-                    list[k][0] = list[k-1][0] + list[k-2][0];
-                    list[k][1] = list[k-1][1] + list[k-2][1];
-                    k++;
-                }
-                System.out.println(list[k-1][0] + " " + list[k-1][1]);
-            }
+        dp0[1] = 0;
+        dp1[1] = 1;
 
+        for(int i = 2; i <= 40; i++) {
+            dp0[i] = dp0[i-1] + dp0[i-2];
+            dp1[i] = dp1[i-1] + dp1[i-2];
         }
 
-    }
+        for(int test = 0; test < t; test++) {
+            int n = Integer.parseInt(br.readLine());
 
+            sb.append(dp0[n] + " " + dp1[n] + "\n");
+        }
+        System.out.println(sb);
+    }
 }
