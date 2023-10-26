@@ -1,27 +1,33 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int weight = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
 
-        int result = 0;
+        //3=1, 5=1, 6=2, 8=2, 9=3
+        //n이 되는 방법은 (n-3)+3, (n-5)+5 두 가지 방법이 있는데,
+        //두 가지 방법 중 저 작은거가 답이 됨.
 
-        while (weight > 0) {
-            if (weight % 5 == 0) {
-                result += weight / 5;
-                break;
-            } else if(weight >= 3) {
-                weight -= 3;
-                result++;
-            } else {
-                result = -1;
-                break;
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+
+        dp[3] = 1;
+        if(n >= 5)
+            dp[5] = 1;
+
+        for (int i = 6; i <= n; i++) {
+            if(dp[i-3] != -1 && dp[i-5] != -1){
+                dp[i] = Math.min(dp[i - 3] + 1, dp[i - 5] + 1);
+            }
+            else if(dp[i-3] == -1 && dp[i-5] != -1) {
+                dp[i] = dp[i-5] + 1;
+            } else if(dp[i-5] == -1 && dp[i-3] != -1) {
+                dp[i] = dp[i-3] + 1;
             }
         }
 
-        System.out.println(result);
+        System.out.println(dp[n]);
     }
 }
