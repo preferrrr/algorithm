@@ -30,9 +30,7 @@ public class Main {
                 if (result > dp[n - 1][j])
                     result = dp[n - 1][j];
             }
-            for (int j = 0; j < n; j++) {
-                Arrays.fill(dp[j], 0);
-            }
+
         }
 
         System.out.println(result);
