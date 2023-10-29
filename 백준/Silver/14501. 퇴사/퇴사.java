@@ -12,8 +12,8 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
 
-        arr = new int[2][n + 1];
-        dp = new int[n + 1];
+        arr = new int[2][n + 2];
+        dp = new int[n + 2];
 
         for (int i = 1; i <= n; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -22,7 +22,17 @@ public class Main {
         }
 
 
-        dfs(1, 0);
+        //dfs(1, 0);
+
+
+        for (int i = n; i >= 1; i--) {
+            if (i + arr[0][i] <= n + 1) {
+                dp[i] = Math.max(dp[i + arr[0][i]] + arr[1][i], dp[i + 1]);
+            } else
+                dp[i] = dp[i + 1];
+        }
+
+        max = dp[1];
 
         System.out.println(max);
 
@@ -38,11 +48,10 @@ public class Main {
             return;
         if (p > max)
             max = p;
-        if (cur < n+1) {
+        if (cur < n + 1) {
             dfs(cur + arr[0][cur], p + arr[1][cur]);
             dfs(cur + 1, p);
         }
-
 
 
     }
