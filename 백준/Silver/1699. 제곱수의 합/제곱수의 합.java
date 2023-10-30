@@ -23,19 +23,12 @@ public class Main {
         //82009 = 286^2 + 14^2 + 4^2 + 1^2 / 285^2 + 28^2
 
         for (int i = 3; i <= n; i++) {
-            if(Math.pow(i, 2) <= 100000)
-                dp[(int) Math.pow(i, 2)] = 1;
 
-            if(dp[i] != 0)
-                continue;
-            else {
-                dp[i] = 1 + dp[i-1];
-                for (int j = 2; j <= i / 2; j++) {
-                    int temp = dp[j] + dp[i-j];
+            dp[i] = i;
 
-                    if(temp < dp[i])
-                        dp[i] = temp;
-                }
+            for (int j = 1; j * j <= i; j++) {
+                if (dp[i] > dp[i - (j * j)] + 1)
+                    dp[i] = dp[i - (j * j)] + 1;
             }
 
         }
