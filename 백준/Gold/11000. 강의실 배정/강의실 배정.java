@@ -4,54 +4,61 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
+
+    static int n;
+    static List<Node> nodes = new ArrayList<>();
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
     public static void main(String[] args) throws IOException {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int n = Integer.parseInt(br.readLine());
-
-
-        Room[] rooms = new Room[n];
-
-        for (int i = 0; i < n; i++) {
-            Room room = new Room();
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            room.x = Integer.parseInt(st.nextToken());
-            room.y = Integer.parseInt(st.nextToken());
-
-            rooms[i] = room;
-        }
-        Arrays.sort(rooms);
-
-        PriorityQueue<Integer> queue = new PriorityQueue();
-
-        queue.add(rooms[0].y);
-
-        for(int i = 1; i < n; i++) {
-            if(queue.peek() <= rooms[i].x) {
-                queue.poll();
-            }
-            queue.offer(rooms[i].y);
-
-        }
-
-        System.out.println(queue.size());
-
+        input();
+        System.out.println(solve());
     }
 
-    public static class Room implements Comparable<Room> {
-        int x;
-        int y;
+    static class Node implements Comparable<Node> {
+        int start, end;
+
+        public Node(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
 
         @Override
-        public int compareTo(Room o) {
-            if (this.x == o.x) {
-                return this.y - this.y;
-            }
-            return this.x - o.x;
+        public int compareTo(Node o) {
+            if (this.start == o.start)
+                return this.end - o.end;
+            return this.start - o.start;
         }
     }
 
+    static void input() throws IOException{
+        n = Integer.parseInt(br.readLine());
 
+        for(int i = 0 ; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            nodes.add(new Node(
+                    Integer.parseInt(st.nextToken()),
+                    Integer.parseInt(st.nextToken())
+            ));
+        }
+
+        Collections.sort(nodes);
+
+    }
+
+    static int solve() {
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+
+        queue.add(nodes.get(0).end);
+
+        for(int i = 1 ; i < n; i++) {
+            if(queue.peek() <= nodes.get(i).start)
+                queue.poll();
+
+            queue.add(nodes.get(i).end);
+
+        }
+
+        return queue.size();
+    }
 
 }
