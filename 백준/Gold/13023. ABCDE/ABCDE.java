@@ -1,59 +1,65 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static int n, m;
-    static Map<Integer, ArrayList<Integer>> graph = new HashMap<>();
-    static int[] visited;
+    static int result = 0;
+    static boolean[] visited;
+    static Map<Integer, ArrayList<Integer>> map = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        input();
+        solve();
+        System.out.println(result);
+    }
+
+    static void input() throws IOException {
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
+        visited = new boolean[n];
 
-        visited = new int[n];
         for (int i = 0; i < n; i++) {
-            graph.put(i, new ArrayList<>());
+            map.put(i, new ArrayList<>());
         }
 
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            graph.get(a).add(b);
-            graph.get(b).add(a);
+            map.get(a).add(b);
+            map.get(b).add(a);
         }
+    }
 
-        for(int i = 0 ; i < n; i++) {
-            if(!result)
+    static void solve() {
+        for (int i = 0; i < n; i++) {
+            if (result == 0)
                 dfs(i, 1);
         }
-
-        if(result)
-            System.out.println(1);
-        else System.out.println(0);
-
-
     }
-    static boolean result = false;
 
     static void dfs(int cur, int d) {
-        if(d == 5) {
-            result = true;
+
+        if (d == 5) {
+            result = 1;
             return;
         }
-        visited[cur] = 1;
 
-        List<Integer> list = graph.get(cur);
+        visited[cur] = true;
 
-        for(int v : list) {
-            if(visited[v] == 0) {
-                dfs(v, d + 1);
-            }
-        }
-        visited[cur] = 0;
+        ArrayList<Integer> linked = map.get(cur);
+
+        for (int i = 0; i < linked.size(); i++) 
+            if (!visited[linked.get(i)]) 
+                dfs(linked.get(i), d + 1);
+
+        visited[cur] = false;
     }
 }
