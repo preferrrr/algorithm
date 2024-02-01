@@ -7,57 +7,61 @@ import java.util.StringTokenizer;
 public class Main {
     static int n, m;
     static int[][] arr;
-    static int[][] visited;
+    static int[][] dp;
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        input();
+        dfs(0, 0);
+        System.out.println(dp[0][0]);
+    }
+
+    static void input() throws IOException {
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        m = Integer.parseInt(st.nextToken());
+
         n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        arr = new int[n][m];
+        dp = new int[n][m];
 
-        arr = new int[m][n];
-        visited = new int[m][n];
 
-        for(int i = 0 ; i < m; i++) {
-            Arrays.fill(visited[i], -1);
-        }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], -1);
             st = new StringTokenizer(br.readLine());
-
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < m; j++) {
                 arr[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-
-        System.out.println(dfs(0,0));
-
     }
 
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
 
-    static int dfs(int x, int y) {
 
-        if (x == m - 1 && y == n - 1)
+    static int dfs(int i, int j) {
+
+
+        if (i == n - 1 && j == m - 1) {
             return 1;
-
-        if(visited[x][y] != -1)
-            return visited[x][y];
-
-        visited[x][y] = 0;
-
-        for (int i = 0; i < 4; i++) {
-            int nextX = x + dx[i];
-            int nextY = y + dy[i];
-            if (nextX >= 0 && nextY >= 0 && nextX < m && nextY < n && arr[x][y] > arr[nextX][nextY]) {
-                visited[x][y] += dfs(nextX,nextY);
-
-            }
-
         }
 
-        return visited[x][y];
+        if(dp[i][j] != -1)
+            return dp[i][j];
+
+        dp[i][j] = 0;
+
+        for (int d = 0; d < 4; d++) {
+            int x = i + dx[d];
+            int y = j + dy[d];
+
+            if (x >= 0 && y >= 0 && x < n && y < m && arr[x][y] < arr[i][j]) {
+                dp[i][j] += dfs(x, y);
+            }
+        }
+
+        return dp[i][j];
     }
+
 }
