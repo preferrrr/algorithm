@@ -4,49 +4,15 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static int n, m;
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static int n, m, time;
     static int[][] arr;
     static boolean[][] visited;
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
-
-        arr = new int[n][m];
-        visited = new boolean[n][m];
-        int time = 0;
-        int cheese = 0;
-        for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < m; j++) {
-                arr[i][j] = Integer.parseInt(st.nextToken());
-                if (arr[i][j] == 1)
-                    cheese++;
-            }
-        }
-
-
-        while (true) {
-            time++;
-            int temp = bfs();
-
-            if (cheese - temp == 0)
-                break;
-            else {
-                cheese -= temp;
-                for(int i = 0; i < n; i++) {
-                    Arrays.fill(visited[i], false);
-                }
-            }
-
-        }
-
-
+        input();
+        int cheese = solve();
         System.out.println(time + "\n" + cheese);
-
-
     }
 
     static class Node {
@@ -58,16 +24,30 @@ public class Main {
         }
     }
 
+    static void input() throws IOException {
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        arr = new int[n][m];
+        visited = new boolean[n][m];
+
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < m; j++) {
+                arr[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+    }
+
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
 
     static int bfs() {
         Deque<Node> deque = new ArrayDeque<>();
+        List<Node> list = new ArrayList<>();
 
         deque.add(new Node(0, 0));
         visited[0][0] = true;
-
-        List<Node> edge = new ArrayList<>();
 
         while (!deque.isEmpty()) {
             Node poll = deque.pollFirst();
@@ -76,35 +56,43 @@ public class Main {
                 int x = poll.x + dx[i];
                 int y = poll.y + dy[i];
 
-                if (rangeCheck(x, y)) {
-                    if (arr[x][y] == 0 && !visited[x][y]) {
-                        visited[x][y] = true;
-                        deque.add(new Node(x, y));
-                    } else if (arr[x][y] == 1 && !visited[x][y]) {
-                        visited[x][y] = true;
-                        edge.add(new Node(x, y));
+                if (x >= 0 && y >= 0 && x < n && y < m && !visited[x][y]) {
+                    if (arr[x][y] == 0) {
+                        deque.addLast(new Node(x, y));
+                    } else {
+                        list.add(new Node(x, y));
                     }
+                    visited[x][y] = true;
                 }
             }
         }
 
-        edge.stream().forEach(node -> arr[node.x][node.y] = 0);
-
-        return edge.size();
+        for(int i = 0 ; i < n; i++) {
+            Arrays.fill(visited[i], false);
+        }
+        if(list.isEmpty()) {
+            return 0;
+        } else {
+            for(int i = 0 ; i < list.size(); i++) {
+                arr[list.get(i).x][list.get(i).y] = 0;
+            }
+            return list.size();
+        }
     }
 
-    static boolean rangeCheck(int x, int y) {
-        return x >= 0 && y >= 0 && x < n && y < m;
-    }
+    static int solve() {
 
-    static boolean allZero(int[][] arr) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (arr[i][j] != 0)
-                    return false;
+        int cheese = 0;
+        while(true) {
+            int temp = bfs();
+            if(temp == 0)
+                break;
+            else {
+                time++;
+                cheese = temp;
             }
         }
 
-        return true;
+        return cheese;
     }
 }
