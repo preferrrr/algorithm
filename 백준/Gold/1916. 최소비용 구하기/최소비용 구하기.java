@@ -4,76 +4,82 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static Map<Integer, ArrayList<Node>> graph = new HashMap<>();
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static Map<Integer, List<Node>> map = new HashMap<>();
+    static int n, m, start, end;
     static int[] dist;
     static boolean[] visited;
+    static final int INF = Integer.MAX_VALUE;
+
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int n = Integer.parseInt(br.readLine());
-        int m = Integer.parseInt(br.readLine());
-
-        for (int i = 1; i <= n; i++) {
-            graph.put(i, new ArrayList<>());
-        }
-        dist = new int[n + 1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        visited = new boolean[n + 1];
-
-        for (int i = 0; i < m; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int price = Integer.parseInt(st.nextToken());
-
-            graph.get(a).add(new Node(b, price));
-        }
-
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int start = Integer.parseInt(st.nextToken());
-        int end = Integer.parseInt(st.nextToken());
-
-        dijkstra(start);
-
+        input();
+        dijkstra();
         System.out.println(dist[end]);
-
     }
 
     static class Node implements Comparable<Node> {
-        int city, cost;
+        int x, w;
 
-        public Node(int city, int cost) {
-            this.city = city;
-            this.cost = cost;
+        public Node(int x, int w) {
+            this.x = x;
+            this.w = w;
         }
 
         @Override
         public int compareTo(Node o) {
-            return this.cost - o.cost;
+            return this.w - o.w;
         }
     }
 
-    static void dijkstra(int start) {
+    static void input() throws IOException {
+        n = Integer.parseInt(br.readLine());
+        m = Integer.parseInt(br.readLine());
+
+        dist = new int[n + 1];
+        Arrays.fill(dist, INF);
+        visited = new boolean[n + 1];
+
+        for(int i = 1; i <= n; i++)
+            map.put(i, new ArrayList<>());
+
+        for(int i = 0 ; i < m; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+
+            map.get(a).add(new Node(b, w));
+        }
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        start = Integer.parseInt(st.nextToken());
+        end = Integer.parseInt(st.nextToken());
+    }
+
+    static void dijkstra() {
         PriorityQueue<Node> queue = new PriorityQueue<>();
+
         queue.add(new Node(start, 0));
         dist[start] = 0;
 
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             Node poll = queue.poll();
-            if(visited[poll.city])
+
+            if(visited[poll.x])
                 continue;
 
-            visited[poll.city] = true;
+            visited[poll.x] = true;
 
-            for(Node node : graph.get(poll.city)) {
-                if(dist[node.city] > dist[poll.city] + node.cost) {
-                    dist[node.city] = dist[poll.city] + node.cost;
-                    queue.add(new Node(node.city, dist[node.city]));
+            for (Node node : map.get(poll.x)) {
+                if(dist[node.x] > dist[poll.x] + node.w) {
+                    dist[node.x] = dist[poll.x] + node.w;
+                    queue.add(new Node(node.x, dist[node.x]));
                 }
             }
-
         }
-
-
     }
+
+
+
+
 }
