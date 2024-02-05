@@ -5,23 +5,77 @@ import java.util.*;
 
 public class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static int n, m, time;
+    static int n, m;
+    static int cheese = 0;
+    static int time = 0;
     static int[][] arr;
     static boolean[][] visited;
 
+    static int[] dx = {-1, 0, 1, 0};
+    static int[] dy = {0, 1, 0, -1};
+
     public static void main(String[] args) throws IOException {
         input();
-        int cheese = solve();
+        solve();
         System.out.println(time + "\n" + cheese);
     }
 
-    static class Node {
-        int x, y;
-
-        public Node(int x, int y) {
-            this.x = x;
-            this.y = y;
+    static void solve() {
+        while (bfs()) {
+            for (int i = 0; i < n; i++) {
+                Arrays.fill(visited[i], false);
+            }
         }
+    }
+
+    static boolean bfs() {
+
+        List<Node> cheeses = new ArrayList<>();
+
+        Deque<Node> deque = new ArrayDeque<>();
+        deque.add(new Node(0, 0));
+        visited[0][0] = true;
+
+        while (!deque.isEmpty()) {
+            Node poll = deque.pollFirst();
+
+            for (int i = 0; i < 4; i++) {
+                int x = poll.x + dx[i];
+                int y = poll.y + dy[i];
+
+                if (x >= 0 && y >= 0 && x < n && y < m && !visited[x][y]) {
+                    if (arr[x][y] == 0) {
+                        deque.addLast(new Node(x, y));
+                    } else {
+                        cheeses.add(new Node(x, y));
+                    }
+                    visited[x][y] = true;
+                }
+            }
+        }
+
+        if (cheeses.isEmpty()) {
+            return false;
+        } else {
+            time++;
+            cheese = cheeses.size();
+
+            for (int i = 0; i < cheeses.size(); i++) {
+                Node node = cheeses.get(i);
+                arr[node.x][node.y] = 0;
+            }
+            return true;
+        }
+    }
+
+    static boolean allMelt() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (arr[i][j] != 0)
+                    return false;
+            }
+        }
+        return true;
     }
 
     static void input() throws IOException {
@@ -37,62 +91,20 @@ public class Main {
                 arr[i][j] = Integer.parseInt(st.nextToken());
             }
         }
+
+
     }
 
-    static int[] dx = {-1, 0, 1, 0};
-    static int[] dy = {0, 1, 0, -1};
+    static class Node {
+        int x, y;
 
-    static int bfs() {
-        Deque<Node> deque = new ArrayDeque<>();
-        List<Node> list = new ArrayList<>();
-
-        deque.add(new Node(0, 0));
-        visited[0][0] = true;
-
-        while (!deque.isEmpty()) {
-            Node poll = deque.pollFirst();
-
-            for (int i = 0; i < 4; i++) {
-                int x = poll.x + dx[i];
-                int y = poll.y + dy[i];
-
-                if (x >= 0 && y >= 0 && x < n && y < m && !visited[x][y]) {
-                    if (arr[x][y] == 0) {
-                        deque.addLast(new Node(x, y));
-                    } else {
-                        list.add(new Node(x, y));
-                    }
-                    visited[x][y] = true;
-                }
-            }
-        }
-
-        for(int i = 0 ; i < n; i++) {
-            Arrays.fill(visited[i], false);
-        }
-        if(list.isEmpty()) {
-            return 0;
-        } else {
-            for(int i = 0 ; i < list.size(); i++) {
-                arr[list.get(i).x][list.get(i).y] = 0;
-            }
-            return list.size();
+        public Node(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 
-    static int solve() {
-
-        int cheese = 0;
-        while(true) {
-            int temp = bfs();
-            if(temp == 0)
-                break;
-            else {
-                time++;
-                cheese = temp;
-            }
-        }
-
-        return cheese;
-    }
 }
+
+
+
