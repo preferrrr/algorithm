@@ -4,12 +4,12 @@ class Solution {
     public int[] solution(String[] genres, int[] plays) {
         
         Map<String, Integer> map1 = new HashMap<>();
-        Map<String, List<Node>> map2 = new HashMap<>();
+        Map<String, PriorityQueue<Node>> map2 = new HashMap<>();
         
         for(int i = 0 ; i < genres.length; i++) {
             if(!map1.containsKey(genres[i])) {
                 map1.put(genres[i], plays[i]);
-                map2.put(genres[i], new ArrayList());
+                map2.put(genres[i], new PriorityQueue());
             } else {
                 map1.put(genres[i], map1.get(genres[i]) + plays[i]);
             }
@@ -20,7 +20,6 @@ class Solution {
         
         for(String key : map1.keySet()) {
             genresList.add(new Genre(key, map1.get(key)));
-            Collections.sort(map2.get(key));
         }
         
         Collections.sort(genresList);
@@ -29,10 +28,13 @@ class Solution {
         
         for(int i = 0 ; i < genresList.size(); i++) {
             Genre genre = genresList.get(i);
+            PriorityQueue<Node> queue = map2.get(genre.name);
             
-            result.add(map2.get(genre.name).get(0).i);
-            if(map2.get(genre.name).size() >= 2)
-                result.add(map2.get(genre.name).get(1).i);
+            int temp = 0;
+            while (!queue.isEmpty() && temp < 2) {
+                result.add(queue.poll().i);
+                temp++;
+            }
         }
         
         int[] answer = new int[result.size()];
