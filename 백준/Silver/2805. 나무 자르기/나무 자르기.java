@@ -6,7 +6,9 @@ import java.util.StringTokenizer;
 
 public class Main {
     static int n, m;
+    static long max = 0;
     static int[] trees;
+
     public static void main(String[] args) throws IOException {
         input();
         System.out.println(solve(m));
@@ -19,41 +21,38 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
         trees = new int[n];
         st = new StringTokenizer(br.readLine());
-        for(int i = 0 ; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             trees[i] = Integer.parseInt(st.nextToken());
+            if (trees[i] > max)
+                max = trees[i];
         }
+
+
     }
 
     static long solve(int m) {
-        Arrays.sort(trees);
-        //10 15 17 20
-        long l = 0;
-        long r = trees[trees.length - 1];
 
-        long result = 0;
-        long max = 0;
 
-        while (l <= r) {
-            long mid = (l + r) / 2;
+        long left = 1;
+        long right = max;
 
-            long temp = 0;
-            for (int i = trees.length - 1; i >= 0; i--) {
+        while (left < right) {
+            long mid = (left + right) / 2;
+
+            long totalLength = 0;
+            for (int i = 0 ; i < trees.length; i++) {
                 if (trees[i] > mid)
-                    temp += trees[i] - mid;
+                    totalLength += trees[i] - mid;
             }
 
-            if (temp < m) {
-                r = mid - 1;
+            if (totalLength >= m) {
+                left = mid + 1;
             } else {
-                if (max > 0 && temp > max)
-                    return result;
-                l = mid + 1;
-                result = mid;
-                max = temp;
+                right = mid;
             }
         }
 
-        return result;
+        return left - 1;
     }
 
 }
