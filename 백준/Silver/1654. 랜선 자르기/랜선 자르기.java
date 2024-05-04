@@ -1,52 +1,53 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
+
+    static int n, k;
+    static long max;
+    static long[] arr;
+
     public static void main(String[] args) throws IOException {
+        input();
+        solve();
+    }
+
+    static void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int n, k;
         StringTokenizer st = new StringTokenizer(br.readLine());
-        k = Integer.parseInt(st.nextToken());
         n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        max = 0;
 
-        long left = 0;
-        long right = 0;
-        int[] arr = new int[k];
-        for (int i = 0 ; i < k; i++) {
+        arr = new long[n];
+
+        for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(br.readLine());
-            if (arr[i] > right)
-                right = arr[i];
+            if (arr[i] > max)
+                max = arr[i];
         }
+    }
 
-        right++;
-
-        Arrays.sort(arr);
+    static void solve() {
+        long left = 1;
+        long right = max + 1;
 
         while (left < right) {
             long mid = (left + right) / 2;
 
-            long count = 0;
-            for (int i = 0 ; i < k; i++) {
+            int count = 0;
+
+            for (int i = 0; i < n; i++)
                 count += arr[i] / mid;
 
-                if (count >= n)
-                    break;
-            }
-
-            if (count < n)
-                right = mid;
-            else
+            if (count >= k)
                 left = mid + 1;
-
-
+            else
+                right = mid;
         }
 
         System.out.println(left - 1);
-
-
     }
 }
