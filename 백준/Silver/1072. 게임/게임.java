@@ -4,36 +4,46 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        long x, y;
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        x = Integer.parseInt(st.nextToken());
-        y = Integer.parseInt(st.nextToken());
+    static long x, y;
 
-        long rate = y * 100 / x;
+    public static void main(String[] args) throws IOException {
+        input();
+        solve();
+    }
+
+    static void input() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        x = Long.parseLong(st.nextToken());
+        y = Long.parseLong(st.nextToken());
+
+    }
+
+    static void solve() {
+        long p = y * 100 / x;
+
         long left = 0;
         long right = x;
 
-        if (rate >= 99)
+        if (p >= 99) {
             System.out.println(-1);
-        else {
-            while (left < right) {
-                long mid = (left + right) / 2;
-                //조건을 만족하는 가장 작은 mid를 찾아야 해.
-                //조건 : rate보다 temp가 커야함.
-                long temp = (y + mid) * 100 / (x + mid);
-
-                if (rate >= temp) {
-                    left = mid + 1;
-                } else {
-                    right = mid;
-                }
-
-            }
-
-            System.out.println(right);
+            return;
         }
 
+        while (left < right) {
+            long mid = (left + right) / 2;
+
+            long x2 = x + mid;
+            long y2 = y + mid;
+            long p2 = y2 * 100 / x2;
+
+            if (p2 <= p)
+                left = mid + 1;
+            else right = mid;
+        }
+
+        System.out.println(left);
     }
+
+
 }
